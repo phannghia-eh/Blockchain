@@ -1,8 +1,8 @@
 var Account = require('../../models/Account');
 var Bcrypt = require('../../Utilities/BCrypt')
 var async = require('async');
-var MailServices = require('./MailServices');
-
+var MailServices = require('../../services/MailServices');
+var AccountServices = require('../../services/AccountServices')
 class RegisterController {
     static doRegister(req, res, next){
         if(req.body.email && req.body.password){
@@ -27,6 +27,23 @@ class RegisterController {
                 else res.status(200).json({success: true, message: 'Register successfully'})
             });
         }
+    }
+
+    static doActivate(req, res, next){
+        console.log(req.params);
+        async.waterfall([
+            cb => AccountServices.getByActivationCode(req.params.code,cb),
+            (result, cb) => {
+                if(result){
+                    result.isActivated = true;
+                    result.activateCode = '';
+                    AccountServices.update(result._id, result, cb)
+                } else
+                    return cb(null, 'Account alreade activated')
+            }
+        ], (err, result)=>{
+            console.log(result)
+        })
     }
 }
 

@@ -9,6 +9,7 @@ global.config = require('./config')
 
 var auth = require('./routes/Auth');
 var index = require('./routes/index');
+var mwXAccessToken = require('./middlewares/xAccessToken');
 
 var app = express();
 
@@ -33,8 +34,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
 app.use('/auth', auth);
+
+app.use('/api', mwXAccessToken, index);
+// app.use('/api', mwXAccessToken());
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

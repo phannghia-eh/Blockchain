@@ -4,6 +4,10 @@ let account = new mongoose.Schema({
     name: String,
     phone: Number,
     activateCode: String,
+    admin:{
+        type: Boolean,
+        default: false
+    },
     email: {
         type: String,
         unique: true,

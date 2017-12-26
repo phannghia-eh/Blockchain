@@ -17,9 +17,9 @@ class AuthServices {
             to: to,
             subject: 'Activation Email From Block Chain',
             text: 'Activate mail',
-            html:   '<h1>Welcome to ShopABC!</h1>'
+            html:   '<h1>Welcome to Blockchain!</h1>'
                     +'<p>To get started, you need to verify your email address. </p>'
-                    +'<p><a href=http://localhost:3000/verify/' + code
+                    +'<p><a href=http://localhost:3000/auth/verify/' + code
                     + '>Verify Email</a></p>'
         };
 

@@ -20,9 +20,6 @@ class AuthController {
                        if(!account.isActivated)
                            res.status(200).json({success: false, message: 'Account has not activated yet'})
                        else{
-                           const payload = {
-                               user: account
-                           }
                            var token = jwt.create({username: account.username, _id:account._id});
                            res.send({
                                success: true,
@@ -30,7 +27,6 @@ class AuthController {
                                token: token
                            })
                        }
-
                    } else{
                        res.send({
                            success: false,
@@ -42,8 +38,8 @@ class AuthController {
        })
    }
 
-   static doActivate(req, res, next){
-
+   static doLogout(req, res, next){
+        res.status(200).send({success: true, token: null})
    }
 }
 

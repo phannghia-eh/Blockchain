@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 let account = new mongoose.Schema({
-    username: {
+    name: String,
+    phone: Number,
+    activateCode: String,
+    email: {
         type: String,
         unique: true,
         require: true
@@ -10,7 +13,15 @@ let account = new mongoose.Schema({
         type: String,
         require: true
     },
-    isActivated:{
+    actualBalance: {
+        type: Number,
+        default: 0
+    },
+    realBalance: {
+        type: Number,
+        default: 0
+    },
+    isActivated: {
         type: Boolean,
         default: false
     },

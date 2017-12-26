@@ -3,12 +3,12 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose    = require('mongoose');
 
 global.config = require('./config')
 
 var auth = require('./routes/Auth');
 var index = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express();
 
@@ -19,6 +19,13 @@ app.use((req, res, next) => {
     if(req.method === 'OPTIONS') return res.end()
     next()
 })
+
+mongoose.connect(config.default_connect_string);
+var dbMongo = mongoose.connection;
+dbMongo.on('err', console.error.bind(console, 'connect fail'));
+dbMongo.once('open',function () {
+    console.log('mongo connected');
+});
 
 app.use(logger('dev'));
 app.use(bodyParser.json());

@@ -16,18 +16,21 @@ class AuthController {
                });
            } else {
                Bcrypt.compare(password, account.password, (err, isMatch) => {
-                   console.log(account)
-                   console.log(isMatch)
                    if(isMatch) {
-                       const payload = {
-                           user: account
+                       if(!account.isActivated)
+                           res.status(200).json({success: false, message: 'Account has not activated yet'})
+                       else{
+                           const payload = {
+                               user: account
+                           }
+                           var token = jwt.create({username: account.username, _id:account._id});
+                           res.send({
+                               success: true,
+                               message: 'Authentication success',
+                               token: token
+                           })
                        }
-                       var token = jwt.create({username: account.username, _id:account._id});
-                       res.send({
-                           success: true,
-                           message: 'Authentication success',
-                           token: token
-                       })
+
                    } else{
                        res.send({
                            success: false,
@@ -37,6 +40,10 @@ class AuthController {
                })
            }
        })
+   }
+
+   static doActivate(req, res, next){
+
    }
 }
 

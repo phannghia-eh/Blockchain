@@ -12,7 +12,7 @@ var auth = require('./routes/Auth');
 var index = require('./routes/index');
 var mwXAccessToken = require('./middlewares/xAccessToken');
 var app = express();
-app.use(cors());
+//app.use(cors());
 app.use(function(req, res, next){
   res.setHeader('Access-Control-Allow-Origin', config.allow_origin_host);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');

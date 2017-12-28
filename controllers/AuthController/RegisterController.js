@@ -1,51 +1,60 @@
 var Account = require('../../models/Account');
-var Bcrypt = require('../../Utilities/BCrypt')
-var async = require('async');
 var MailServices = require('../../services/MailServices');
-var AccountServices = require('../../services/AccountServices')
-class RegisterController {
-    static doRegister(req, res, next){
-        if(req.body.email && req.body.password){
-            var email = req.body.email;
-            var password = req.body.password;
-            var activateCode = generateCode();
+const axios = require('axios');
+exports.doRegister = function (req, res, next) {
 
-            async.waterfall([
-                cb => Bcrypt.generate(password, 10, cb),
-                (hash, cb) => {
-                    let account = new Account({
-                        email: email,
-                        password: hash,
-                        activateCode: activateCode
-                    });
-                    account.save(cb);
-                },
-                cb => MailServices.sendActivateMail(email, activateCode, cb)
-            ], (err, result) => {
-                console.log(result)
-                if(err) res.status(301).json({success: false, message: err});
-                else res.status(200).json({success: true, message: 'Register successfully'})
+    if (req.body.email && req.body.password) {
+        var email = req.body.email;
+        var password = req.body.password;
+
+
+        axios.get('https://api.kcoin.club/generate-address').then( function (ressult) {
+            console.log(ressult);
+            var activateCode = generateCode();
+            var privateKey = ressult.data.privateKey;
+            var publicKey = ressult.data.publicKey;
+            var address = ressult.data.address;
+            var newAccount = new Account({
+                privateKey: privateKey,
+                publicKey: publicKey,
+                address: address,
+                email: email,
+                password: password,
+                activateCode: activateCode,
+
+            });
+            Account.CreateAccount(newAccount, function (err, account) {
+
+                if (err) {
+                    res.status(301).send({success: false, message: err});
+                    return;
+                } else {
+                    MailServices.sendActivateMail(email, activateCode);
+                    res.status(200).send({success: true, message: 'Register successfully'})
+                }
+            });
+        }).catch(function (error) {
+                console.log(error);
+        });
+
+
+
+    }
+};
+
+
+exports.doActivate = function (req, res, next) {
+
+   Account.GetByActivateCode(req.params.code,function(result) {
+        if(result){
+            result.isActivated = true;
+            result.activateCode = '';
+            Account.Update(result._id, result,function (resultUpdate) {
             });
         }
-    }
-
-    static doActivate(req, res, next){
-        console.log(req.params);
-        async.waterfall([
-            cb => AccountServices.getByActivationCode(req.params.code,cb),
-            (result, cb) => {
-                if(result){
-                    result.isActivated = true;
-                    result.activateCode = '';
-                    AccountServices.update(result._id, result, cb)
-                } else
-                    return cb(null, 'Account alreade activated')
-            }
-        ], (err, result)=>{
-            console.log(result)
-        })
-    }
+    })
 }
+
 
 function generateCode() {
     var text = "";
@@ -56,5 +65,3 @@ function generateCode() {
 
     return text;
 }
-
-module.exports = RegisterController;

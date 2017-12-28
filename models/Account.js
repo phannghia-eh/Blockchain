@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
-let account = new mongoose.Schema({
+var AccountSchema = new mongoose.Schema({
     name: String,
     phone: Number,
     activateCode: String,
@@ -32,7 +33,53 @@ let account = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    privateKey: {
+        type: String,
+    },
+
+    publicKey: {
+        type: String,
+    },
+    address: {
+        type: String,
+    },
 });
-const accountModel = mongoose.model('Account', account);
-module.exports = accountModel;
+
+var Account = module.exports = mongoose.model('Account', AccountSchema,'account');
+
+
+
+module.exports.CreateAccount = function (newAccount, callback) {
+    bcrypt.hash(newAccount.password, 10, function(err, hash) {
+        newAccount.password = hash;
+        newAccount.save(callback);
+    });
+};
+
+module.exports.GetByEmail = function (Email, callback) {
+    var query = {email: Email};
+    Account.findOne(query, callback);
+};
+
+module.exports.GetByActivateCode = function (activateCode, callback) {
+    var query = {activateCode: activateCode};
+    Account.findOne(query, function(err, data) {
+        if (!err) return callback(data);
+    });
+
+};
+
+
+module.exports.Update = function (accountId, accountData, callback) {
+    var query = { _id: accountId };
+    Account.findOneAndUpdate(query, {$set:accountData}, options, callback);
+
+};
+
+module.exports.ComparePassword = function (candidatePassword, hash, callback) {
+    bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
+        if(err) throw err;
+        callback(null, isMatch);
+    });
+};

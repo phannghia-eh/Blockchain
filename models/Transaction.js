@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-let transaction = new mongoose.Schema({
+var TransactionSchema = new mongoose.Schema({
     from: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Account',
@@ -26,5 +26,5 @@ let transaction = new mongoose.Schema({
     }
 })
 
-const transactionModel = mongoose.model('Transaction', transaction);
-module.exports = transactionModel;
+var Transaction = module.exports = mongoose.model('Transaction', TransactionSchema,'transaction');
+

@@ -4,22 +4,22 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose    = require('mongoose');
+var cors = require('cors');
 
-global.config = require('./config')
+var config = require('./config')
 
 var auth = require('./routes/Auth');
 var index = require('./routes/index');
 var mwXAccessToken = require('./middlewares/xAccessToken');
-
 var app = express();
-
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', config.allow_origin_host)
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS')
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization")
-    if(req.method === 'OPTIONS') return res.end()
-    next()
-})
+app.use(cors());
+app.use(function(req, res, next){
+  res.setHeader('Access-Control-Allow-Origin', config.allow_origin_host);
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if(req.method === 'OPTIONS') return res.end();
+  next();
+});
 
 mongoose.connect(config.default_connect_string);
 var dbMongo = mongoose.connection;
@@ -39,11 +39,5 @@ app.use('/auth', auth);
 app.use('/api', mwXAccessToken, index);
 // app.use('/api', mwXAccessToken());
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
 module.exports = app;
+

@@ -4,13 +4,11 @@ const axios = require('axios');
 var config = require('../../config')
 
 exports.doRegister = function (req, res, next) {
-    console.log(req.body);
     if (req.body.email && req.body.password) {
         var email = req.body.email;
         var password = req.body.password;
 
         Account.GetByEmail(email,function (errEmail,accountEmail){
-            console.log(accountEmail)
             if(accountEmail){
                 res.status(200).json({success: false, message: "Sorry. A user with that email address already exists, or the email was invalid."});
             }else{

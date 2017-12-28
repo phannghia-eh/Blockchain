@@ -45,11 +45,17 @@ exports.doRegister = function (req, res, next) {
 
 exports.doActivate = function (req, res, next) {
 
-   Account.GetByActivateCode(req.params.code,function(result) {
+   Account.GetByActivateCode(req.params.code,function(err,result) {
+
         if(result){
             result.isActivated = true;
             result.activateCode = '';
-            Account.Update(result._id, result,function (resultUpdate) {
+            Account.Update(result._id, result,function (error,resultUpdate) {
+                if(error){
+                    res.status(301).send({success: true, message: 'Activate account fail'})
+                }else{
+                    res.status(200).send({success: true, message: 'Activate account successfully'})
+                }
             });
         }
     })

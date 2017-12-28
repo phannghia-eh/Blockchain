@@ -2,15 +2,7 @@ var nodemailer = require('nodemailer');
 
 exports.sendActivateMail = function(toEmail,code) {
 
-    var transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.org',
-        port: 465,
-        secure: true,
-        auth: {
-            user: 'alphatestlaravel@gmail.com',
-            password: 'vanz123456'
-        }
-    });
+    var transporter = nodemailer.createTransport('smtps://alphatestlaravel@gmail.com:vanz123456@smtp.gmail.com');
 
     var mailOption = {
         from: 'alphatestlaravel@gmail.com',
@@ -23,7 +15,7 @@ exports.sendActivateMail = function(toEmail,code) {
         + '>Verify Email</a></p>'
     };
 
-    transporter.sendMail(mailOption, function(err, info){
+        transporter.sendMail(mailOption, function(err, info){
         if (err) {
             console.log(err);
         } else {

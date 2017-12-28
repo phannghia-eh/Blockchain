@@ -64,16 +64,13 @@ module.exports.GetByEmail = function (Email, callback) {
 
 module.exports.GetByActivateCode = function (activateCode, callback) {
     var query = {activateCode: activateCode};
-    Account.findOne(query, function(err, data) {
-        if (!err) return callback(data);
-    });
-
+    Account.findOne(query, callback);
 };
 
 
 module.exports.Update = function (accountId, accountData, callback) {
     var query = { _id: accountId };
-    Account.findOneAndUpdate(query, {$set:accountData}, options, callback);
+    Account.update(query, {$set:accountData},callback);
 
 };
 

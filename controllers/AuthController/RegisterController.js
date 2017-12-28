@@ -2,7 +2,7 @@ var Account = require('../../models/Account');
 var MailServices = require('../../services/MailServices');
 const axios = require('axios');
 exports.doRegister = function (req, res, next) {
-
+    console.log(req.body);
     if (req.body.email && req.body.password) {
         var email = req.body.email;
         var password = req.body.password;

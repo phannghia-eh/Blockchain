@@ -71,3 +71,18 @@ function generateCode() {
 
     return text;
 }
+
+exports.forgotPassword = function(req, res, next) {
+
+    Account.ChangeForgotPassword(req.body.email,function(err,result){
+        if(result){
+
+            MailServices.sendForgotPasswordMail(req.body.email, result.password);
+            if(error){
+                res.status(301).send({success: true, message: 'Sent mail fail'})
+            }else{
+                res.status(200).send({success: true, message: 'Sent mail successfully'})
+            }
+        }
+    })
+}

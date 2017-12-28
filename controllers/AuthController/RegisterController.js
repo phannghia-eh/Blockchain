@@ -4,7 +4,7 @@ const axios = require('axios');
 var config = require('../../config')
 
 exports.doRegister = function (req, res, next) {
-
+    console.log(req.body);
     if (req.body.email && req.body.password) {
         var email = req.body.email;
         var password = req.body.password;

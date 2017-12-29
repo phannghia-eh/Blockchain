@@ -85,7 +85,7 @@ module.exports.ChangeForgotPassword = function(Email, callback){
     var newPassword = "";
     bcrypt.hash(newPassword, 10, function(err,hash){
         newPassword = hash;
-    }
+    });
     var query = {email: Email};
     Account.update(query, {$set:newPassword},callback);
 }

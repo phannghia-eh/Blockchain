@@ -18,9 +18,14 @@ var jwt = require('../../Utilities/JWToken')
             Account.ComparePassword(password,account.password ,function(err, isMatch) {
                 if(isMatch) {
                     if(!account.isActivated)
-                        res.status(301).json({success: false, message: 'Account has not activated yet'})
+                        res.status(200).json({success: false, message: 'Account has not activated yet'})
                     else{
-                        var token = jwt.create({email: account.email, _id:account._id});
+                        var token = jwt.create({email: account.email,
+                                                _id:account._id,
+                                                actual_balance:account.actualBalance,
+                                                real_balance: account.realBalance,
+                                                address: account.address,
+                        });
                         res.status(200).json({
                             success: true,
                             message: 'Authentication success',
@@ -28,7 +33,7 @@ var jwt = require('../../Utilities/JWToken')
                         })
                     }
                 } else{
-                    res.status(301).json({
+                    res.status(200).json({
                         success: false,
                         message: 'Authentication fail, wrong password'
                     })

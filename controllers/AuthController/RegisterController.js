@@ -28,14 +28,14 @@ exports.doRegister = function (req, res, next) {
                     });
                     Account.CreateAccount(newAccount, function (err,account) {
                         if (!account) {
-                            res.status(301).json({success: false, message: "Register fail"});
+                            res.status(200).json({success: false, message: "Register fail"});
                         } else {
                             MailServices.sendActivateMail(email, activateCode);
                             res.status(200).json({success: true, message: 'Register successfully, please check mail.'})
                         }
                     });
                 }).catch(function (error) {
-                    res.status(301).json({success: false, message: "Cannot create adrress wallet"});
+                    res.status(200).json({success: false, message: "Cannot create adrress wallet"});
 
                 });
             }
@@ -59,7 +59,7 @@ exports.doActivate = function (req, res, next) {
             result.activateCode = '';
             Account.Update(result._id, result,function (error,resultUpdate) {
                 if(error){
-                    res.status(301).json({success: true, message: 'Activate account fail'})
+                    res.status(200).json({success: true, message: 'Activate account fail'})
                 }else{
                     res.redirect(config.allow_origin_host+"/login");
                 }
@@ -86,7 +86,7 @@ exports.forgotPassword = function(req, res, next) {
 
             MailServices.sendForgotPasswordMail(req.body.email, result.password);
             if(error){
-                res.status(301).send({success: true, message: 'Sent mail fail'})
+                res.status(200).send({success: true, message: 'Sent mail fail'})
             }else{
                 res.status(200).send({success: true, message: 'Sent mail successfully'})
             }

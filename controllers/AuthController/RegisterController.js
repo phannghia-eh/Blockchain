@@ -14,9 +14,9 @@ exports.doRegister = function (req, res, next) {
             }else{
                 axios.get('https://api.kcoin.club/generate-address').then( function (ressult) {
                     var activateCode = generateCode();
-                    var privateKey = ressult.data.privateKey;
-                    var publicKey = ressult.data.publicKey;
-                    var address = ressult.data.address;
+                    var privateKey = ressult.data.privateKey?ressult.data.privateKey:'';
+                    var publicKey = ressult.data.publicKey?ressult.data.publicKey:'';
+                    var address = ressult.data.address?ressult.data.address:'';
                     var newAccount = new Account({
                         privateKey: privateKey,
                         publicKey: publicKey,

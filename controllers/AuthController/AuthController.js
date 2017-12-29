@@ -22,8 +22,6 @@ var jwt = require('../../Utilities/JWToken')
                     else{
                         var token = jwt.create({email: account.email,
                                                 _id:account._id,
-                                                actual_balance:account.actualBalance,
-                                                real_balance: account.realBalance,
                                                 address: account.address,
                         });
                         res.status(200).json({

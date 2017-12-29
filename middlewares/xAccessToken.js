@@ -15,7 +15,7 @@ function verifyToken(req, res, next){
             } else {
                 console.log(decoded)
                 // if everything is good, save to request for use in other routes
-                req.decoded = decoded;
+                req.user = decoded.data;
                 next();
             }
         });

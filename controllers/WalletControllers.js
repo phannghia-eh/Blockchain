@@ -14,3 +14,7 @@ exports.getWalletMoney = function (req, res, next) {
         }
     })
 }
+
+exports.calculateRealBalance = function (req, res, next) {
+
+}

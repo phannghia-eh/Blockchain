@@ -4,7 +4,7 @@ var jwt = require('../../Utilities/JWToken')
 
 
  exports.doLogin = function(req, res, next) {
-     console.log(res)
+     // console.log(res)
      var email = req.body.email;
      var password = req.body.password;
 

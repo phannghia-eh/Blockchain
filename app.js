@@ -10,9 +10,13 @@ var config = require('./config')
 
 var auth = require('./routes/Auth');
 var api = require('./routes/Api');
+var block = require('./routes/Block');
 var mwXAccessToken = require('./middlewares/xAccessToken');
-var app = express();
+var mwWebSocket = require('./middlewares/WebSocket');
+var mwCheckAdmin = require('./middlewares/checkAdminRole');
 
+var app = express();
+app.use(mwWebSocket.Listen);
 
 app.use(function(req, res, next){
   res.setHeader('Access-Control-Allow-Origin', config.allow_origin_host);
@@ -37,7 +41,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/auth', auth);
 app.use('/api', mwXAccessToken, api);
+app.use('/block', mwXAccessToken, mwCheckAdmin.isAdmin, block);
 // app.use('/api', mwXAccessToken());
+
+app.use(mwWebSocket.Listen);
 
 module.exports = app;
 

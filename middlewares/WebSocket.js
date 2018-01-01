@@ -21,7 +21,7 @@ var secondlyJob = schedule.scheduleJob('*/5 * * * * *', function(){
 });
 
 exports.Listen = function (req, res, next) {
-    ws.onopen
-    ws.onmessage
+   ws.onopen
+   ws.onmessage
     next()
 }

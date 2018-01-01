@@ -1,5 +1,6 @@
 var Account = require('../../models/Account');
 var MailServices = require('../../services/MailServices');
+var utils =  require('../../Utilities/Utils')
 const axios = require('axios');
 var config = require('../../config')
 
@@ -7,36 +8,31 @@ exports.doRegister = function (req, res, next) {
     if (req.body.email && req.body.password) {
         var email = req.body.email;
         var password = req.body.password;
-
         Account.GetByEmail(email,function (errEmail,accountEmail){
             if(accountEmail){
                 res.status(200).json({success: false, message: "Sorry. A user with that email address already exists, or the email was invalid."});
             }else{
-                axios.get('https://api.kcoin.club/generate-address').then( function (ressult) {
-                    var activateCode = generateCode();
-                    var privateKey = ressult.data.privateKey?ressult.data.privateKey:'';
-                    var publicKey = ressult.data.publicKey?ressult.data.publicKey:'';
-                    var address = ressult.data.address?ressult.data.address:'';
-                    var newAccount = new Account({
-                        privateKey: privateKey,
-                        publicKey: publicKey,
-                        address: address,
-                        email: email,
-                        password: password,
-                        activateCode: activateCode,
+                var generateAddress = utils().generateAddress();
+                var activateCode = generateCode();
+                var privateKey = generateAddress.privateKey?generateAddress.privateKey:'';
+                var publicKey = generateAddress.publicKey?generateAddress.publicKey:'';
+                var address = generateAddress.address?generateAddress.address:'';
+                var newAccount = new Account({
+                    privateKey: privateKey,
+                    publicKey: publicKey,
+                    address: address,
+                    email: email,
+                    password: password,
+                    activateCode: activateCode,
 
-                    });
-                    Account.CreateAccount(newAccount, function (err,account) {
-                        if (!account) {
-                            res.status(200).json({success: false, message: "Register fail"});
-                        } else {
-                            MailServices.sendActivateMail(email, activateCode);
-                            res.status(200).json({success: true, message: 'Register successfully, please check mail.'})
-                        }
-                    });
-                }).catch(function (error) {
-                    res.status(200).json({success: false, message: "Cannot create adrress wallet"});
-
+                });
+                Account.CreateAccount(newAccount, function (err,account) {
+                    if (!account) {
+                        res.status(200).json({success: false, message: "Register fail"});
+                    } else {
+                        MailServices.sendActivateMail(email, activateCode);
+                        res.status(200).json({success: true, message: 'Register successfully, please check mail.'})
+                    }
                 });
             }
 

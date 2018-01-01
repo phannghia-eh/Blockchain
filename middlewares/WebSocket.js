@@ -8,9 +8,11 @@ ws.onopen = function () {
 };
 
 ws.onmessage = function (data) {
-    // console.log('incoming data', data)
+    data = JSON.parse(data.data)
+    console.log('incoming data', data)
+    console.log('Extract data', data.data)
     Block.addNewBlockItem(data.data, (err, rls)=>{
-        console.log(rls)
+        // console.log(rls)
     })
 };
 

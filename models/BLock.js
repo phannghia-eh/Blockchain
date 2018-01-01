@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-var BlockSchema = mongoose.Schema({
+var BlockSchema = new mongoose.Schema({
     hash: {
         type: String,
         index: true
@@ -16,8 +16,8 @@ var BlockSchema = mongoose.Schema({
 var Block = module.exports = mongoose.model('Block', BlockSchema, 'block');
 
 module.exports.addNewBlockItem = function (data, callback) {
-    console.log(data)
-    var newSchema = new BlockSchema({
+    console.log('inputdata ', data)
+    var newSchema = new Block({
         hash: data.hash,
         nonce: data.nonce,
         version: data.version,

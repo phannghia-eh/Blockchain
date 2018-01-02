@@ -25,6 +25,7 @@
     "node-gyp": "^3.6.2",
     "node-schedule": "^1.2.5",
     "nodemailer": "^4.0.1",
+    "request": "^2.83.0",
     "serve-favicon": "~2.4.5",
     "ursa": "^0.9.4",
     "ws": "^3.3.3"

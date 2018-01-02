@@ -25,6 +25,34 @@ exports.sendActivateMail = function(toEmail,code) {
 
 }
 
+
+exports.sendConfirmTransactionMail = function(toEmail,code) {
+
+    var transporter = nodemailer.createTransport('smtps://alphatestlaravel@gmail.com:vanz123456@smtp.gmail.com');
+
+    var mailOption = {
+        from: 'alphatestlaravel@gmail.com',
+        to: toEmail,
+        subject: 'Confirm new transaction',
+        text: 'Activate mail',
+        html: '<h1>Welcome to Blockchain!</h1>'
+        + '<p>Link verification transaction: </p>'
+        + '<p><a href=http://localhost:3000/auth/transaction/' + code
+        + '>Verify Transaction</a></p>'
+    };
+
+    transporter.sendMail(mailOption, function(err, info){
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('Message sent: ' +  info.response);
+        }
+    });
+
+}
+
+
+
 exports.sendForgotPasswordMail = function(toEmail,pass) {
 
     var transporter = nodemailer.createTransport('smtps://alphatestlaravel@gmail.com:vanz123456@smtp.gmail.com');

@@ -62,6 +62,17 @@ module.exports.GetByEmail = function (Email, callback) {
     Account.findOne(query, callback);
 };
 
+
+
+module.exports.GetUserByAddress = function (address) {
+
+    return new Promise(resolve => {
+        Account.findOne({address}, function (error, account) {
+            resolve(account);
+        });
+    });
+};
+
 module.exports.GetByActivateCode = function (activateCode, callback) {
     var query = {activateCode: activateCode};
     Account.findOne(query, callback);

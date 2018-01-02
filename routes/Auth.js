@@ -3,7 +3,7 @@ var router = express.Router();
 const wrap = require('express-async-wrap');
 var authController = require('../controllers/AuthController/AuthController');
 var registerController = require('../controllers/AuthController/RegisterController');
-
+var TransactionController = require('../controllers/TransactionController');
 router.post('/login', function (req, res, next){
     authController.doLogin(req, res, next);
 });
@@ -19,5 +19,7 @@ router.post('/register', function (req, res, next){
 router.get('/verify/:code', function (req, res, next){
     registerController.doActivate(req, res, next)
 })
+
+router.get('/transaction/:activateCode', TransactionController.ConfirmTransaction);
 
 module.exports = router;

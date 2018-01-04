@@ -152,6 +152,31 @@ exports.CreateTransaction = async function (req, res, next) {
 };
 
 
+exports.DeleteTransaction = async function (req, res, next) {
+    try {
+        let transactionId = req.params.transactionId;
+        let deleteResult = await TransactionServer.DeleteLocalTransaction(transactionId);
+        if (!deleteResult) {
+            res.status(301).json({
+                success: false,
+                message: 'Unknown error!'
+            });
+            return
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Transaction has been deleted.'
+        });
+    }
+    catch (e) {
+        res.status(301).json({
+            success: false,
+            message: e.message
+        });
+    }
+};
+
 function generateCode() {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -161,4 +186,6 @@ function generateCode() {
 
     return text;
 }
+
+
 

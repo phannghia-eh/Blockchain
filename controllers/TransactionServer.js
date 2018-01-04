@@ -391,3 +391,11 @@ module.exports.GetAvailableBalanceOfServer = async function () {
 
     return balance;
 };
+
+module.exports.DeleteLocalTransaction = function (transactionId) {
+    return new Promise(resolve => {
+        LocalTransaction.find({_id: transactionId}).remove(function (err) {
+            resolve(!err);
+        });
+    });
+};

@@ -6,5 +6,5 @@ var TransactionController = require('../controllers/TransactionController')
 router.use('/wallet', Wallet);
 router.get('/dashboard/:address', DashboardController.GetDashboardInfo);
 router.post('/transaction', TransactionController.CreateTransaction);
-
+router.get('/transaction/:transactionId',TransactionController.DeleteTransaction);
 module.exports = router;

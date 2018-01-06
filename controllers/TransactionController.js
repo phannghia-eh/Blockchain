@@ -10,7 +10,6 @@ exports.ConfirmTransaction = async function (req, res, next) {
 
 
         let activateCode   = req.params.activateCode;
-console.log(activateCode)
         let transaction = await LocalTransaction.GetLocalTransactionByCode(activateCode);
         if (!transaction) {
             res.status(301).json({
@@ -91,7 +90,7 @@ exports.CreateTransaction = async function (req, res, next) {
         }
 
         let balance = await TransactionServer.GetBalance(srcAddress, config.balance_type.real);
-
+        console.log('Tien local: ',balance);
 
         if (balance < amount){
             res.status(301).json({
@@ -103,7 +102,8 @@ exports.CreateTransaction = async function (req, res, next) {
 
         let dstUser = Account.GetUserByAddress(dstAddress);
         if (!dstUser) { // is send money to external transaction
-            let availableBalance = await RemoteTransaction.GetAvailableBalanceOfServer();
+            let availableBalance = await TransactionServer.GetAvailableBalanceOfServer();
+            console.log('Tien remote: ',availableBalance)
             if (availableBalance < amount){
                 res.status(301).json({
                     success: false,
@@ -122,8 +122,6 @@ exports.CreateTransaction = async function (req, res, next) {
             remaining_amount: amount,
             status: config.local_transaction_status.initialization
         };
-        console.log(localTransactionData)
-
         let newTransaction = await LocalTransaction.CreateLocalTransaction(localTransactionData);
         if (!newTransaction) {
             res.status(301).json({
@@ -133,7 +131,6 @@ exports.CreateTransaction = async function (req, res, next) {
             return;
         }
         let user = await Account.GetUserByAddress(srcAddress);
-
         MailServices.sendConfirmTransactionMail(user.email,code)
         res.status(200).json({
             success: true,

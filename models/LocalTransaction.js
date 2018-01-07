@@ -1,5 +1,5 @@
 let mongoose = require('mongoose');
-let config = require ('../config')
+let config = require('../config')
 
 let LocalTransactionSchema = new mongoose.Schema(
     {
@@ -13,7 +13,7 @@ let LocalTransactionSchema = new mongoose.Schema(
     }
 );
 
-var  LocalTransaction = module.exports = mongoose.model('LocalTransaction', LocalTransactionSchema, 'LocalTransaction');
+var LocalTransaction = module.exports = mongoose.model('LocalTransaction', LocalTransactionSchema, 'LocalTransaction');
 
 module.exports.CreateLocalTransaction = function (newLocalTx) {
     return new Promise(resolve => {
@@ -33,9 +33,25 @@ module.exports.GetAllLocalTransaction = function () {
     })
 }
 
+module.exports.GetAllAdress = function () {
+    return new Promise(resolve => {
+        LocalTransaction.find({}, {
+            amount: 0,
+            remaining_amount: 0,
+            status: 0,
+            activateCode: 0,
+            created_at: 0,
+            _id: 0,
+            __v: 0
+        }, (err, rls) => {
+            resolve(rls)
+        })
+    })
+}
+
 module.exports.GetLocalTransactionByCode = function (code) {
     return new Promise(resolve => {
-        LocalTransaction.findOne({activateCode:code}, function (error, localTransaction) {
+        LocalTransaction.findOne({activateCode: code}, function (error, localTransaction) {
             resolve(localTransaction);
         });
     });
@@ -49,7 +65,6 @@ module.exports.GetLocalTransactionBy = function (id) {
         });
     });
 };
-
 
 
 module.exports.UpdateLocalTransaction = function (updateLocalTransaction) {
@@ -73,7 +88,7 @@ module.exports.GetLocalTransactions = function (address, sort = null, offset = 0
                     ]
                 }
             ],
-            status: {$ne: config.local_transaction_status.incalid }
+            status: {$ne: config.local_transaction_status.incalid}
         }).skip(offset).limit(limit);
 
         if (sort) {

@@ -6,7 +6,7 @@ module.exports = {
     local_transaction_status: {
         pending: 'pending',
         done: 'done',
-        incalid: 'invalid',
+        invalid: 'incalid',
         initialization: 'initialization'
     },
     remote_transaction_status: {

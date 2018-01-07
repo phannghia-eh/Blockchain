@@ -113,9 +113,20 @@ module.exports.ChangeForgotPassword = function(Email, callback){
 
 module.exports.GetAll = function () {
     return new Promise(resolve => {
-        Account.find({}, {password:0, __v:0}, (err, rls) => {
+        Account.find({}, {password:0, __v:0, privateKey:0, publicKey:0}, (err, rls) => {
             <!--console.log(rls)-->
             resolve(rls)
         })
     })
+}
+
+module.exports.CheckInternalAddress = function(address){
+    let rls = new Promise(resolve => {
+        Account.findOne({address: address}, {password:0}, (err, account)=>{
+            resolve(account)
+        })
+    })
+    if(rls)
+        return true;
+    return false;
 }

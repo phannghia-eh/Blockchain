@@ -7,8 +7,9 @@ var MailServices = require('../services/MailServices');
 
 exports.ConfirmTransaction = async function (req, res, next) {
     try {
+
+
         let activateCode   = req.params.activateCode;
-        console.log(activateCode)
         let transaction = await LocalTransaction.GetLocalTransactionByCode(activateCode);
         if (!transaction) {
             res.status(301).json({
@@ -73,6 +74,8 @@ exports.ConfirmTransaction = async function (req, res, next) {
     }
 };
 
+
+
 exports.CreateTransaction = async function (req, res, next) {
     try {
         let srcAddress = req.body.src_address;
@@ -87,7 +90,7 @@ exports.CreateTransaction = async function (req, res, next) {
         }
 
         let balance = await TransactionServer.GetBalance(srcAddress, config.balance_type.real);
-
+        console.log('Tien local: ',balance);
 
         if (balance < amount){
             res.status(301).json({
@@ -99,7 +102,8 @@ exports.CreateTransaction = async function (req, res, next) {
 
         let dstUser = Account.GetUserByAddress(dstAddress);
         if (!dstUser) { // is send money to external transaction
-            let availableBalance = await RemoteTransaction.GetAvailableBalanceOfServer();
+            let availableBalance = await TransactionServer.GetAvailableBalanceOfServer();
+            console.log('Tien remote: ',availableBalance)
             if (availableBalance < amount){
                 res.status(301).json({
                     success: false,
@@ -118,8 +122,6 @@ exports.CreateTransaction = async function (req, res, next) {
             remaining_amount: amount,
             status: config.local_transaction_status.initialization
         };
-        console.log(localTransactionData)
-
         let newTransaction = await LocalTransaction.CreateLocalTransaction(localTransactionData);
         if (!newTransaction) {
             res.status(301).json({
@@ -129,7 +131,6 @@ exports.CreateTransaction = async function (req, res, next) {
             return;
         }
         let user = await Account.GetUserByAddress(srcAddress);
-
         MailServices.sendConfirmTransactionMail(user.email,code)
         res.status(200).json({
             success: true,
@@ -147,63 +148,31 @@ exports.CreateTransaction = async function (req, res, next) {
     }
 };
 
-exports.GetALlLocalTransaction = async function (req, res, next) {
-    try{
-        let localTransaction = await LocalTransaction.GetAllLocalTransaction();
-        if(localTransaction)
-            res.status(200).json({success: true, message:'Get all transaction success', transactions: localTransaction})
-        else
-            res.status(300).json({success: false, message:'Empty transaction'})
-    } catch (e){
-        res.status(301).json({
-            success: false,
-            message: e.message
-        });
-    }
 
-}
-
-exports.GetServerBalance = async function (req, res, next) {
-    try{
-        let allAccount = await Account.GetAll();
-        console.log(allAccount)
-        let real = 0;
-        let actual = 0;
-        for(let index in allAccount){
-            let acount = allAccount[index];
-            // console.log(acount.email);
-            let tmpActual = await TransactionServer.GetBalance(acount.address, config.balance_type.actual);
-            // console.log(tmpActual)
-            let tmpReal = await TransactionServer.GetBalance(acount.address, config.balance_type.real);
-            // console.log(tmpReal)
-            actual += tmpActual;
-            real +=  tmpReal;
+exports.DeleteTransaction = async function (req, res, next) {
+    try {
+        let transactionId = req.params.transactionId;
+        let deleteResult = await TransactionServer.DeleteLocalTransaction(transactionId);
+        if (!deleteResult) {
+            res.status(301).json({
+                success: false,
+                message: 'Unknown error!'
+            });
+            return
         }
 
-        res.status(200).json({success: true, actual: actual, real: real, totalUser: allAccount.length})
-    } catch (e){
+        res.status(200).json({
+            success: true,
+            message: 'Transaction has been deleted.'
+        });
+    }
+    catch (e) {
         res.status(301).json({
             success: false,
             message: e.message
         });
     }
-}
-
-exports.GetAllUser = async function (req, res, next){
-    try{
-        let allAccount = await Account.GetAll();
-        for(let account of allAccount ){
-            let tmpActual = await TransactionServer.GetBalance(acount.address, config.balance_type.actual);
-            let tmpReal = await TransactionServer.GetBalance(acount.address, config.balance_type.real);
-
-        }
-    }catch (e){
-        res.status(301).json({
-            success: false,
-            message: e.message
-        });
-    }
-}
+};
 
 function generateCode() {
     var text = "";
@@ -214,4 +183,6 @@ function generateCode() {
 
     return text;
 }
+
+
 

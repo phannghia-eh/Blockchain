@@ -17,7 +17,8 @@ ws.onmessage = function (data) {
     console.log('incoming data', data)
     console.log('Extract data', data.data)
     let transactions = data.data.transactions;
-    TransactionServer.SyncTransactions(transactions);
+    console.log(transactions)
+   // TransactionServer.SyncTransactions(transactions);
 
 };
 

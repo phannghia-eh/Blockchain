@@ -87,17 +87,13 @@ module.exports.SyncTransactions = async function (transactions, isInitAction = f
             // confirm pending transaction
             let pendingTransaction = await GetPendingTransactionByDstAddress(dstAddress);
             if (pendingTransaction) {
-                pendingTransaction.remaining_amount = pendingTransaction.amount - value;
-                console.log(pendingTransaction)
-                console.log(output)
+                pendingTransaction.remaining_amount = 0;
                 pendingTransaction.status           = config.local_transaction_status.done;
                 let updatedTransaction = await UpdateLocalTransaction(pendingTransaction);
             }
 
             // sync new transaction
             let user = await Account.GetUserByAddress(dstAddress);
-            console.log(user)
-
             let existingRemoteTransaction = await GetRemoteTransactionByHashIndex(hash, outputIndex);
             if (user) {
                 if (!existingRemoteTransaction) {
@@ -175,12 +171,8 @@ module.exports.SendPostRequest = function (url, data) {
 module.exports.SendTransactionRequest = async function (srcAddress, dstAddress, amount) {
     let requestData = await BuildTransactionRequest(srcAddress, dstAddress, amount);
     let signedRequest = SignTransactionRequest(requestData.inputs, requestData.outputs);
-    console.log(requestData);
-
     console.log(signedRequest);
-
     let url = config.blockchain_api_host + '/transactions';
-
     axios.post(url,signedRequest).then(requestResult => {
         console.log(requestResult)
         if (requestResult.code === 'InvalidContent') {
@@ -190,12 +182,6 @@ module.exports.SendTransactionRequest = async function (srcAddress, dstAddress, 
     }).catch((error) => {
         console.log('error: ' + error);
     });
-
-
-
-   // let requestResult = await SendPostRequest(url, signedRequest);
-
-    //console.log(requestResult);
 
 };
 
@@ -387,7 +373,6 @@ module.exports.GetBalance = async function(address, type) {
     return receivedAmount - sentAmount;
 };
 
-
 module.exports.GetAvailableBalanceOfServer = async function () {
     let freeRemoteTransactions = await GetFreeRemoteTransactions();
     let balance = 0;
@@ -395,6 +380,13 @@ module.exports.GetAvailableBalanceOfServer = async function () {
         let freeRemoteTransaction = freeRemoteTransactions[index];
         balance += freeRemoteTransaction.amount;
     }
-
     return balance;
+};
+
+module.exports.DeleteLocalTransaction = function (transactionId) {
+    return new Promise(resolve => {
+        LocalTransaction.find({_id: transactionId}).remove(function (err) {
+            resolve(!err);
+        });
+    });
 };

@@ -353,8 +353,6 @@ function ToBinary(transaction, withoutUnlockScript) {
     return Buffer.concat([ version, inputCount, inputs, outputCount, outputs ]);
 }
 
-
-
 module.exports.GetBalance = async function(address, type) {
     let transactions  = await LocalTransaction.GetLocalTransactions(address);
 
@@ -362,7 +360,7 @@ module.exports.GetBalance = async function(address, type) {
     let sentAmount    = 0;
     for (let index in transactions) {
         let transaction = transactions[index];
-        console.log(transaction)
+        // console.log(transaction)
         if (transaction.status === config.local_transaction_status.incalid )
             continue;
 
@@ -377,6 +375,15 @@ module.exports.GetBalance = async function(address, type) {
         }
     }
 
+    // let account = await Account.GetUserByAddress(address);
+    // if(type === config.balance_type.actual)
+    //     account.actualBalance = receivedAmount - sentAmount;
+    // else
+    //     account.realBalance = receivedAmount - sentAmount;
+    // console.log(account)
+    // account.save(err => {
+    //     return receivedAmount - sentAmount;
+    // })
     return receivedAmount - sentAmount;
 };
 

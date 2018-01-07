@@ -51,27 +51,25 @@ exports.sendConfirmTransactionMail = function(toEmail,code) {
 
 }
 
-
-
-exports.sendForgotPasswordMail = function(toEmail,pass) {
-
+exports.sendForgotPasswordMail = function(toEmail, code, cb) {
     var transporter = nodemailer.createTransport('smtps://alphatestlaravel@gmail.com:vanz123456@smtp.gmail.com');
-
     var mailOption = {
         from: 'alphatestlaravel@gmail.com',
         to: toEmail,
         subject: 'Forgot password From Block Chain',
         text: 'Change forgot password mail',
         html: '<h1>Welcome to Blockchain!</h1>'
-        + '<p>This is your new password:</p>' + pass
-        + '<p>Use this password to change your password</p>'
+        + '<p>Link to change new password:</p>'
+        + '<p><a href=http://localhost:3006/auth/changepassword/' + code + '/>Click here</a></p>'
     };
 
-        transporter.sendMail(mailOption, function(err, info){
+    transporter.sendMail(mailOption, function(err, info){
+        console.log('Sending reset password email to: ' + toEmail)
         if (err) {
-            console.log(err);
+            return cb(err, null);
         } else {
-            console.log('Message sent: ' +  info.response);
+            console.log('Send mail success to: ' + toEmail);
+            return cb(null, info.response);
         }
     });
 

@@ -11,6 +11,7 @@ var config = require('./config')
 var auth = require('./routes/Auth');
 var api = require('./routes/Api');
 var block = require('./routes/Block');
+var admin = require('./routes/Admin');
 var mwXAccessToken = require('./middlewares/xAccessToken');
 var mwWebSocket = require('./middlewares/WebSocket');
 var mwCheckAdmin = require('./middlewares/checkAdminRole');
@@ -42,6 +43,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/auth', auth);
 app.use('/api', mwXAccessToken, api);
 app.use('/block', mwXAccessToken, mwCheckAdmin.isAdmin, block);
+app.use('/admin', mwXAccessToken, mwCheckAdmin.isAdmin, admin);
 // app.use('/api', mwXAccessToken());
 
 app.use(mwWebSocket.Listen);

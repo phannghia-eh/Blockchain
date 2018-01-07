@@ -5,6 +5,7 @@ var AccountSchema = new mongoose.Schema({
     name: String,
     phone: Number,
     activateCode: String,
+    changePasswordCode: String,
     admin:{
         type: Boolean,
         default: false
@@ -48,7 +49,14 @@ var AccountSchema = new mongoose.Schema({
 
 var Account = module.exports = mongoose.model('Account', AccountSchema,'account');
 
-
+module.exports.UpdateAccountPassword = function (newAccount, newPassword , callback){
+    bcrypt.hash(newPassword, 10, (err, hash) => {
+        console.log(newPassword, hash);
+        newAccount.changePasswordCode = '';
+        newAccount.password = hash;
+        newAccount.save(callback);
+    })
+}
 
 module.exports.CreateAccount = function (newAccount, callback) {
     bcrypt.hash(newAccount.password, 10, function(err, hash) {
@@ -61,8 +69,6 @@ module.exports.GetByEmail = function (Email, callback) {
     var query = {email: Email};
     Account.findOne(query, callback);
 };
-
-
 
 module.exports.GetUserByAddress = function (address) {
 
@@ -78,6 +84,10 @@ module.exports.GetByActivateCode = function (activateCode, callback) {
     Account.findOne(query, callback);
 };
 
+module.exports.GetByChangePasswordCode = function (code, callback) {
+    var query = {changePasswordCode: code};
+    Account.findOne(query, callback);
+};
 
 module.exports.Update = function (accountId, accountData, callback) {
     var query = { _id: accountId };
@@ -99,4 +109,13 @@ module.exports.ChangeForgotPassword = function(Email, callback){
     });
     var query = {email: Email};
     Account.update(query, {$set:newPassword},callback);
+}
+
+module.exports.GetAll = function () {
+    return new Promise(resolve => {
+        Account.find({}, {password:0, __v:0}, (err, rls) => {
+            <!--console.log(rls)-->
+            resolve(rls)
+        })
+    })
 }

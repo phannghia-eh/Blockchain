@@ -25,6 +25,13 @@ module.exports.CreateLocalTransaction = function (newLocalTx) {
     });
 };
 
+module.exports.GetAllLocalTransaction = function () {
+    return new Promise(resolce => {
+        LocalTransaction.find({}, function (err, rls) {
+            resolce(rls)
+        })
+    })
+}
 
 module.exports.GetLocalTransactionByCode = function (code) {
     return new Promise(resolve => {

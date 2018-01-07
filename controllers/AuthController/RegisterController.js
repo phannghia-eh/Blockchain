@@ -37,14 +37,8 @@ exports.doRegister = function (req, res, next) {
             }
 
         });
-
-
-
-
-
     }
 };
-
 
 exports.doActivate = function (req, res, next) {
 
@@ -64,19 +58,7 @@ exports.doActivate = function (req, res, next) {
     })
 }
 
-
-function generateCode() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (var i = 0; i < 30; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-}
-
 exports.forgotPassword = function(req, res, next) {
-
     Account.ChangeForgotPassword(req.body.email,function(err,result){
         if(result){
 
@@ -88,4 +70,14 @@ exports.forgotPassword = function(req, res, next) {
             }
         }
     })
+}
+
+function generateCode() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < 30; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
 }

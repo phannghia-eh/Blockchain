@@ -2,7 +2,7 @@ const WebSocket = require('ws');
 const ws = new WebSocket('wss://api.kcoin.club/');
 var schedule = require('node-schedule');
 var Block = require('../models/BLock');
-var TranactionServer = require('../controllers/TransactionServer')
+var TransactionServer = require('../controllers/TransactionServer')
 var http = require("http");
 setInterval(function() {
     http.get("http://blockchain-cnm-th2014.herokuapp.com");
@@ -18,7 +18,7 @@ ws.onmessage = function (data) {
     console.log('Extract data', data.data)
     let transactions = data.data.transactions;
     console.log(transactions)
-   // TransactionServer.SyncTransactions(transactions);
+    TransactionServer.SyncTransactions(transactions);
 
 };
 

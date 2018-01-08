@@ -78,6 +78,7 @@ module.exports.SyncTransactions = async function (transactions, isInitAction = f
         let transaction = transactions[index];
         let outputs = transaction.outputs;
         let hash = transaction.hash;
+        let isReceiveRefund = false;
         for (let outputIndex in outputs) {
             let output = outputs[outputIndex];
             let value = output.value;
@@ -90,6 +91,8 @@ module.exports.SyncTransactions = async function (transactions, isInitAction = f
                 pendingTransaction.remaining_amount = 0;
                 pendingTransaction.status           = config.local_transaction_status.done;
                 let updatedTransaction = await UpdateLocalTransaction(pendingTransaction);
+                isReceiveRefund = true;
+                continue;
             }
 
             // sync new transaction
@@ -107,37 +110,19 @@ module.exports.SyncTransactions = async function (transactions, isInitAction = f
                     let tmpnewRemoteTransaction        = await CreateRemoteTransaction(newRemoteTransaction);
                 }
 
-
-                // Nhan tien tu ben ngoai
-                if(outputs.length > 1 && outputIndex == 0){
-                    let tmpoutput = outputs[outputIndex+1]
-                    let tmplockScript = tmpoutput.lockScript;
-                    let tmpdstAddress = tmplockScript.split(" ")[1];
-
-                    let tmpuser = await  Account.GetUserByAddress(tmpdstAddress)
-                    if(!tmpuser){
-                        let tmplocalTransactionData = {
-                            src_address: '',
-                            dst_address: dstAddress,
-                            amount: value,
-                            remaining_amount: 0,
-                            status:config.local_transaction_status.done,
-                        };
-                        let tmpnewLocalTransaction  = await CreateLocalTransaction(tmplocalTransactionData);
-                    }
+                if (isReceiveRefund) {
+                    Console.log("trung roi")
+                    continue;
                 }
 
-
-               /* if (isInitAction || outputs.length < 2) {
-                    let localTransactionData = {
-                        src_address: '',
-                        dst_address: dstAddress,
-                        amount: value,
-                        remaining_amount: 0,
-                        status:config.local_transaction_status.done,
-                    };
-                    let newLocalTransaction  = await CreateLocalTransaction(localTransactionData);
-                }*/
+                let tmplocalTransactionData = {
+                    src_address: '',
+                    dst_address: dstAddress,
+                    amount: value,
+                    remaining_amount: 0,
+                    status:config.local_transaction_status.done,
+                };
+                let tmpnewLocalTransaction  = await CreateLocalTransaction(tmplocalTransactionData);
             }
         }
     }

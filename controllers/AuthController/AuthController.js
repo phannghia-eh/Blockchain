@@ -13,6 +13,8 @@ exports.doLogin = function (req, res, next) {
     let email = req.body.email;
     let password = req.body.password;
 
+
+
     Account.GetByEmail(email, function (err, account) {
         if (!account || err) {
             res.send({
@@ -27,6 +29,7 @@ exports.doLogin = function (req, res, next) {
                     else {
                         let token = jwt.create({
                             email: account.email,
+                            admin: account.admin,
                             _id: account._id,
                             address: account.address,
                         });

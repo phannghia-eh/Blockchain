@@ -11,7 +11,7 @@ exports.sendActivateMail = function(toEmail,code) {
         text: 'Activate mail',
         html: '<h1>Welcome to Blockchain!</h1>'
         + '<p>To get started, you need to verify your email address. </p>'
-        + '<p><a href=http://localhost:3000/auth/verify/' + code
+        + '<p><a href=https://blockchain-cnm-th2014.herokuapp.com/http://localhost:3000/auth/verify/' + code
         + '>Verify Email</a></p>'
     };
 
@@ -37,7 +37,7 @@ exports.sendConfirmTransactionMail = function(toEmail,code) {
         text: 'Activate mail',
         html: '<h1>Welcome to Blockchain!</h1>'
         + '<p>Link verification transaction: </p>'
-        + '<p><a href=http://localhost:3000/auth/transaction/' + code
+        + '<p><a href=https://blockchain-cnm-th2014.herokuapp.com/auth/transaction/' + code
         + '>Verify Transaction</a></p>'
     };
 
@@ -60,7 +60,7 @@ exports.sendForgotPasswordMail = function(toEmail, code, cb) {
         text: 'Change forgot password mail',
         html: '<h1>Welcome to Blockchain!</h1>'
         + '<p>Link to change new password:</p>'
-        + '<p><a href=http://localhost:3006/auth/changepassword/' + code + '/>Click here</a></p>'
+        + '<p><a href=https://blockchain-cnm-th2014-ui.herokuapp.com/ + code + '/>Click here</a></p>'
     };
 
     transporter.sendMail(mailOption, function(err, info){

@@ -12,7 +12,7 @@ exports.create = function(object){
             payload,
             config.jwt_secret_key,
             {
-                expiresIn: 864000
+                expiresIn: 300000
             }
         )
         return token

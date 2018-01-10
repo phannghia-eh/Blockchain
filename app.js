@@ -20,7 +20,7 @@ var app = express();
 app.use(mwWebSocket.Listen);
 
 app.use(function(req, res, next){
-  res.setHeader('Access-Control-Allow-Origin', config.allow_origin_host);
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization,x-access-token");
   if(req.method === 'OPTIONS') return res.end();
